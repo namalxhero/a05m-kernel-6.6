@@ -42,10 +42,14 @@ jobs:
         run: |
           pip install gdown
           for i in 1 2 3; do
-            gdown "https://drive.google.com/uc?id=1um0sIcncTeqVkAE28DwKHlPv1427T5Nb" -O toolchain.tar.gz && break
+            gdown "https://drive.google.com/uc?id=1um0sIcncTeqVkAE28DwKHlPv1427T5Nb" -O toolchain.tar.gz 2>&1 | tee -a gdown.log || true
+            test -s toolchain.tar.gz && break
             sleep 10
           done
-          test -s toolchain.tar.gz
+          if [ ! -s toolchain.tar.gz ]; then
+            echo "::error title=gdown failed::$(tail -c 700 gdown.log | tr '\n' ' ')"
+            exit 1
+          fi
           tar -xf toolchain.tar.gz
 
       - name: Integrar KernelSU-Next
