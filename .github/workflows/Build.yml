@@ -119,11 +119,12 @@ jobs:
         run: |
           KBUILD="KernelSU-Next/kernel/Kbuild"
           test -f "$KBUILD"
-          LIST="0x3e6:79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7,0x338:f26471a28031130362bce7eebffb9a0b8afc3095f163ce0c75a309f03b644a1f,0x2f4:677ba89d87d3fe36372f7296d115bfcc4abe9106b395779cc7edb774fe460319"
+          LIST="0x3e6:79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7,0x338:f26471a28031130362bce7eebffb9a0b8afc3095f163ce0c75a309f03b644a1f,0x2f4:677ba89d87d3fe36372f7296d115bfcc4abe9106b395779cc7edb774fe460319,0x303:ac202167ef386b72bb56b1b668e72ff941e3484eb3f320b2efacfd48f8ebcf28"
           sed -i -E "s|^(KSU_NEXT_MANAGER_LIST := ).*$|\1$LIST|" "$KBUILD"
           grep -n "KSU_NEXT_MANAGER_LIST :=" "$KBUILD"
           grep -q "0x2f4:677ba89d87d3fe36372f7296d115bfcc4abe9106b395779cc7edb774fe460319" "$KBUILD"
           grep -q "0x3e6:79e59011" "$KBUILD"
+          grep -q "0x303:ac202167ef386b72" "$KBUILD"
 
       - name: Habilitar CONFIG_KSU y SUSFS en overlay
         run: |
