@@ -41,10 +41,12 @@ jobs:
       - name: Descargar toolchain (con reintentos)
         run: |
           pip install gdown
-          for i in 1 2 3; do
-            gdown "https://drive.google.com/uc?id=1um0sIcncTeqVkAE28DwKHlPv1427T5Nb" -O toolchain.tar.gz 2>&1 | tee -a gdown.log || true
-            test -s toolchain.tar.gz && break
-            sleep 10
+          for id in 1vsQfRgdNHlD0md9tF7j5fpkL_17whzbH 1um0sIcncTeqVkAE28DwKHlPv1427T5Nb; do
+            for i in 1 2; do
+              gdown "https://drive.google.com/uc?id=$id" -O toolchain.tar.gz 2>&1 | tee -a gdown.log || true
+              test -s toolchain.tar.gz && break 2
+              sleep 8
+            done
           done
           if [ ! -s toolchain.tar.gz ]; then
             echo "::error title=gdown failed::$(tail -c 700 gdown.log | tr '\n' ' ')"
