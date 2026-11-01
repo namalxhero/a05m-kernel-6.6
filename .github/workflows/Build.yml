@@ -255,7 +255,14 @@ jobs:
       - name: Compilar
         run: |
           chmod +x build_kernel.sh
-          bash build_kernel.sh
+          set +e
+          bash build_kernel.sh 2>&1 | tee build.log
+          rc=${PIPESTATUS[0]}
+          if [ "$rc" -ne 0 ]; then
+            MSG=$(grep -E "ERROR:|error:|Error:|Unable to find|undefined reference|fatal|No such file|not found" build.log | grep -v "WARN" | tail -18 | cut -c1-260 | sed 's/%/%25/g' | awk '{printf "%s%%0A",$0}')
+            echo "::error title=BUILD-ERRORS::${MSG}"
+          fi
+          exit $rc
 
       - name: Subir artifact
         uses: actions/upload-artifact@v4
