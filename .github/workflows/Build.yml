@@ -171,7 +171,7 @@ jobs:
             sed -i "/^CONFIG_${k}=/d;/^# CONFIG_${k} is not set/d" "$CFG"
           done
           cat <<EOF >> "$CFG"
-          CONFIG_ZRAM=y
+          CONFIG_ZRAM=m
           CONFIG_ZRAM_DEF_COMP_ZSTD=y
           CONFIG_CRYPTO_ZSTD=y
           CONFIG_CRYPTO_LZ4=y
