@@ -64,7 +64,7 @@ jobs:
           sed -i 's/static int security_sid_to_context_with_policy/int security_sid_to_context_with_policy/' KernelSU-Next/kernel/feature/selinux_hide.c
           sed -i 's/static void security_compute_av_user_with_policy/void security_compute_av_user_with_policy/' KernelSU-Next/kernel/feature/selinux_hide.c
           echo "KSUN_COMMIT=$(cd KernelSU-Next && git rev-parse HEAD)" >> "$GITHUB_ENV"
-          echo "KERNEL_NAME=KSUN" >> "$GITHUB_ENV"
+          echo "KERNEL_NAME=RootX" >> "$GITHUB_ENV"
 
       - name: Integrar SukiSU-Ultra
         if: ${{ inputs.root_provider == 'sukisu-ultra-v4.1.3' }}
