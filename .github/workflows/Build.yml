@@ -164,6 +164,35 @@ jobs:
             sed -i 's/CONFIG_SECURITY_DEFEX_USER=y/# CONFIG_SECURITY_DEFEX_USER is not set/' "$DEFEX_CFG"
           fi
 
+      - name: Performance, Network (BBR) y WireGuard
+        run: |
+          CFG="./kernel/kernel_device_modules-6.6/kernel/configs/mt6768_overlay.config"
+          for k in ZRAM ZRAM_DEF_COMP_ZSTD ZRAM_DEF_COMP_LZ4 CRYPTO_ZSTD CRYPTO_LZ4 TCP_CONG_ADVANCED TCP_CONG_BBR DEFAULT_TCP_CONG NET_SCH_FQ DEFAULT_NET_SCH WIREGUARD NET_UDP_TUNNEL CRYPTO_LIB_CHACHA20POLY1305 CRYPTO_LIB_CURVE25519 NF_NAT NF_CONNTRACK IP_NF_NAT IP_NF_TARGET_MASQUERADE NETFILTER_XT_TARGET_MASQUERADE NETFILTER_XT_MATCH_CONNTRACK IOSCHED_BFQ; do
+            sed -i "/^CONFIG_${k}=/d;/^# CONFIG_${k} is not set/d" "$CFG"
+          done
+          cat <<EOF >> "$CFG"
+          CONFIG_ZRAM=y
+          CONFIG_ZRAM_DEF_COMP_ZSTD=y
+          CONFIG_CRYPTO_ZSTD=y
+          CONFIG_CRYPTO_LZ4=y
+          CONFIG_TCP_CONG_ADVANCED=y
+          CONFIG_TCP_CONG_BBR=y
+          CONFIG_DEFAULT_TCP_CONG="bbr"
+          CONFIG_NET_SCH_FQ=y
+          CONFIG_DEFAULT_NET_SCH="fq"
+          CONFIG_NET_UDP_TUNNEL=y
+          CONFIG_WIREGUARD=y
+          CONFIG_CRYPTO_LIB_CHACHA20POLY1305=y
+          CONFIG_CRYPTO_LIB_CURVE25519=y
+          CONFIG_NF_CONNTRACK=y
+          CONFIG_NF_NAT=y
+          CONFIG_IP_NF_NAT=y
+          CONFIG_IP_NF_TARGET_MASQUERADE=y
+          CONFIG_NETFILTER_XT_TARGET_MASQUERADE=y
+          CONFIG_NETFILTER_XT_MATCH_CONNTRACK=y
+          CONFIG_IOSCHED_BFQ=y
+          EOF
+
       - name: Cache de Bazel
         uses: actions/cache@v4
         with:
