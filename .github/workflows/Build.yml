@@ -214,6 +214,36 @@ jobs:
           CONFIG_NETFILTER_XT_MATCH_MARK=y
           EOF
 
+      - name: "EXPERIMENTAL: Wi-Fi monitor mode (radiotap) + Bluetooth"
+        run: |
+          # 1) Wi-Fi monitor mode: enable sniffer radiotap flag in the MediaTek wlan driver Kbuild
+          for KB in $(find vendor/mediatek/kernel_modules/connectivity/wlan/core -name Kbuild.main 2>/dev/null); do
+            if grep -q 'ifeq (\$(CONFIG_SNIFFER_RADIOTAP), y)' "$KB" && ! grep -q '^CONFIG_SNIFFER_RADIOTAP=y' "$KB"; then
+              sed -i 's|^ifeq (\$(CONFIG_SNIFFER_RADIOTAP), y)|CONFIG_SNIFFER_RADIOTAP=y\n&|' "$KB"
+              echo "Enabled SNIFFER_RADIOTAP in $KB"
+              grep -n -B1 'ifeq (\$(CONFIG_SNIFFER_RADIOTAP), y)' "$KB"
+            fi
+          done
+          # 2) Bluetooth generic kernel options (tethering, HID, serial, LE) + rfkill
+          CFG="./kernel/kernel_device_modules-6.6/kernel/configs/mt6768_overlay.config"
+          for k in BT BT_BREDR BT_RFCOMM BT_RFCOMM_TTY BT_BNEP BT_BNEP_MC_FILTER BT_BNEP_PROTO_FILTER BT_HIDP BT_LE RFKILL UHID HID_GENERIC; do
+            sed -i "/^CONFIG_${k}=/d;/^# CONFIG_${k} is not set/d" "$CFG"
+          done
+          cat <<EOF >> "$CFG"
+          CONFIG_BT=y
+          CONFIG_BT_BREDR=y
+          CONFIG_BT_RFCOMM=y
+          CONFIG_BT_RFCOMM_TTY=y
+          CONFIG_BT_BNEP=y
+          CONFIG_BT_BNEP_MC_FILTER=y
+          CONFIG_BT_BNEP_PROTO_FILTER=y
+          CONFIG_BT_HIDP=y
+          CONFIG_BT_LE=y
+          CONFIG_RFKILL=y
+          CONFIG_UHID=y
+          CONFIG_HID_GENERIC=y
+          EOF
+
       - name: Cache de Bazel
         uses: actions/cache@v4
         with:
