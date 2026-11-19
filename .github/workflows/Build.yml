@@ -58,7 +58,7 @@ jobs:
         if: ${{ inputs.root_provider == 'ksu-next-stable' }}
         working-directory: ./kernel-6.6
         run: |
-          curl -LSs "https://raw.githubusercontent.com/pershoot/KernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
+          curl -LSs "https://raw.githubusercontent.com/namalxhero/KernelSU-Next/sync-pershoot-susfs/kernel/setup.sh" | sed 's/^OWNER="pershoot"/OWNER="namalxhero"/' | bash -s sync-pershoot-susfs
           test -d KernelSU-Next
           sed -i 's/static int security_context_to_sid_with_policy/int security_context_to_sid_with_policy/' KernelSU-Next/kernel/feature/selinux_hide.c
           sed -i 's/static int security_sid_to_context_with_policy/int security_sid_to_context_with_policy/' KernelSU-Next/kernel/feature/selinux_hide.c
